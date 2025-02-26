@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザー管理画面</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+        }
+        .nav-link {
+            color: #333;
+        }
+        .nav-link:hover {
+            background-color: #e9ecef;
+        }
+        .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- サイドバー -->
+        <div class="col-md-2 sidebar py-3">
+            <div class="d-flex flex-column">
+                <h4 class="mb-4 px-3">管理パネル</h4>
+                <nav class="nav flex-column">
+                    <a class="nav-link active mb-2 rounded" href="#">
+                        <i class="bi bi-people-fill me-2"></i>ユーザー一覧
+                    </a>
+                    <a class="nav-link mb-2 rounded" href="#">
+                        <i class="bi bi-person-plus-fill me-2"></i>ユーザー登録
+                    </a>
+                    <a class="nav-link mb-2 rounded" href="#">
+                        <i class="bi bi-gear-fill me-2"></i>設定
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- メインコンテンツ -->
+        <div class="col-md-10 py-3">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>ユーザー一覧</h2>
+                <button class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-2"></i>新規ユーザー
+                </button>
+            </div>
+
+            <!-- 検索フィルター -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="ユーザー名で検索">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option selected>ステータス</option>
+                                <option>有効</option>
+                                <option>無効</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option selected>権限</option>
+                                <option>管理者</option>
+                                <option>一般ユーザー</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-secondary w-100">検索</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ユーザーテーブル -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ユーザー名</th>
+                                    <th>メールアドレス</th>
+                                    <th>権限</th>
+                                    <th>ステータス</th>
+                                    <th>登録日</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>山田太郎</td>
+                                    <td>yamada@example.com</td>
+                                    <td><span class="badge bg-primary">管理者</span></td>
+                                    <td><span class="badge bg-success">有効</span></td>
+                                    <td>2024-03-15</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>鈴木花子</td>
+                                    <td>suzuki@example.com</td>
+                                    <td><span class="badge bg-secondary">一般ユーザー</span></td>
+                                    <td><span class="badge bg-success">有効</span></td>
+                                    <td>2024-03-14</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- ページネーション -->
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">前へ</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">次へ</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

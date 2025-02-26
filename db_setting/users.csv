@@ -1,0 +1,6 @@
+"id","username","email","password_hash","profile_image","bio","created_at","updated_at"
+"1","testuser1","test1@example.com","$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",NULL,"テストユーザー1です","2025-02-20 21:10:35","2025-02-20 21:10:35"
+"2","testuser2","test2@example.com","$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",NULL,"テストユーザー2です","2025-02-20 21:10:35","2025-02-20 21:10:35"
+"3","testuser3","test3@example.com","$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",NULL,"テストユーザー3です","2025-02-20 21:10:35","2025-02-20 21:10:35"
+"7","Hattori Saya","Saya78123@gmail.com","$2y$10$mnNQJv8QwqI397OtoCQM/elRuz45MTIqOFN.VWia/yQvhff4o/S5e","67b734ff9306b.jpg",,"2025-02-20 22:16:00","2025-02-21 14:16:01"
+"8","saya","sayahattori38@gmail.com","$2y$10$BEAsC7gEGssLgVuk.QfSHOcFGw/vrYSF6xZc3TtC4S69oL2RMWXWi",NULL,NULL,"2025-02-22 22:31:47","2025-02-22 22:31:47"

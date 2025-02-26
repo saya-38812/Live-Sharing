@@ -1,0 +1,471 @@
+:root {
+    /* デフォルトのテーマ（緑） */
+    --theme-color: #198754;
+    --theme-color-dark: #157347;
+    --theme-color-rgb: 25, 135, 84;
+    --theme-bg-light: rgba(25, 135, 84, 0.1);
+    --theme-hover: #0b5ed7;
+}
+
+/* テーマカラーのバリエーション */
+[data-theme="blue"] {
+    --theme-color: #0d6efd;
+    --theme-color-rgb: 13, 110, 253;
+    --theme-color-dark: #0b5ed7;
+    --theme-bg-light: #e9f7ef;
+}
+
+[data-theme="green"] {
+    --theme-color: #198754;
+    --theme-color-rgb: 25, 135, 84;
+    --theme-color-dark: #157347;
+    --theme-bg-light: #e9f7ef;
+}
+
+[data-theme="purple"] {
+    --theme-color: #6f42c1;
+    --theme-color-rgb: 111, 66, 193;
+    --theme-color-dark: #5e37a6;
+    --theme-bg-light: #e9f7ef;
+}
+
+[data-theme="pink"] {
+    --theme-color: #d63384;
+    --theme-color-rgb: 214, 51, 132;
+    --theme-color-dark: #ab296a;
+    --theme-bg-light: #e9f7ef;
+}
+
+/* テーマカラーを使用するスタイル */
+
+
+.btn-primary {
+    background-color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--theme-hover);
+    border-color: var(--theme-hover);
+}
+
+.btn-outline-primary {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+
+.text-primary {
+    color: var(--theme-color) !important;
+}
+
+.nav-link.active {
+    background-color: var(--theme-color) !important;
+}
+
+.section-title {
+    color: var(--theme-color);
+    border-bottom-color: var(--theme-color);
+}
+
+body {
+    background-color: var(--theme-bg-light);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--theme-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--theme-color-rgb), 0.25);
+}
+
+.popular-tag {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+
+.popular-tag:hover {
+    background-color: var(--theme-color);
+}
+
+.category-icon {
+    color: var(--theme-color);
+}
+
+/* テーマカラー選択ボタンのスタイル */
+.color-theme-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* 円形に */
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s;
+    position: relative; /* チェックマークのための位置指定 */
+}
+
+.color-theme-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--theme-color);
+}
+
+.color-theme-btn.active {
+    border-color: #fff;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px currentColor;
+}
+
+.color-theme-btn.active::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* 共通スタイル */
+.sidebar {
+    min-height: 100vh;
+    background-color: var(--theme-bg-light);
+    border-right: 1px solid #dee2e6;
+}
+.nav-link {
+    color: #333;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+.nav-link:hover {
+    background-color: var(--theme-bg-light);
+}
+.nav-link.active {
+    background-color: var(--theme-color);
+    color: white;
+}
+
+/* 掲示板専用スタイル */
+.board-category {
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+    transition: transform 0.2s;
+}
+.board-category:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 767.98px) {
+    body {
+        padding-bottom: 4rem;
+    }
+    .col-md-7, .col-md-10, .main-content {
+        padding-bottom: 5rem;
+    }
+}
+
+/* その他の共通スタイル */
+.like-button.liked {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+.like-button.liked i {
+    color: var(--theme-color);
+}
+
+/* 掲示板のカード */
+.post-card {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(var(--theme-color-rgb), 0.1);
+    margin-bottom: 1rem;
+    transition: transform 0.2s;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+}
+
+/* いいねボタン */
+.like-button {
+    transition: all 0.2s;
+}
+
+/* セクションタイトル */
+.section-title {
+    color: var(--theme-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--theme-color);
+}
+
+/* タブナビゲーション */
+.nav-tabs .nav-link {
+    color: #495057;
+    border: none;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--theme-color);
+    background: none;
+    border-bottom: 2px solid var(--theme-color);
+}
+
+/* マイページ専用スタイル */
+.profile-header {
+    background-color: var(--theme-bg-light);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.event-card {
+    border: 1px solid rgba(var(--theme-color-rgb), 0.1);
+    transition: transform 0.2s;
+}
+
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(var(--theme-color-rgb), 0.1);
+}
+
+.checklist-item {
+    padding: 0.5rem;
+    background-color: #fff;
+    border: 1px solid rgba(var(--theme-color-rgb), 0.1);
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
+
+/* ホーム画面のスタイル */
+.upcoming-event {
+    border-left: 3px solid var(--theme-color);
+}
+
+.event-date {
+    color: var(--theme-color);
+}
+
+.badge-upcoming {
+    background-color: var(--theme-color);
+}
+
+.popular-artist {
+    border: 1px solid rgba(var(--theme-color-rgb), 0.1);
+    transition: all 0.2s;
+}
+
+.popular-artist:hover {
+    border-color: var(--theme-color);
+    background-color: var(--theme-bg-light);
+}
+
+/* ボタンとリンク */
+.btn-primary {
+    background-color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--theme-hover);
+    border-color: var(--theme-hover);
+}
+
+.btn-outline-primary {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+
+/* モバイルナビゲーション */
+.fixed-bottom .btn-link.text-primary {
+    color: var(--theme-color) !important;
+}
+
+/* バッジ */
+.badge-primary {
+    background-color: var(--theme-color);
+}
+
+/* カード */
+.card {
+    border-color: rgba(var(--theme-color-rgb), 0.1);
+}
+
+.card:hover {
+    box-shadow: 0 2px 8px rgba(var(--theme-color-rgb), 0.1);
+}
+
+/* フォーム要素 */
+.form-control:focus {
+    border-color: var(--theme-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--theme-color-rgb), 0.25);
+}
+
+/* アラートとメッセージ */
+.alert-primary {
+    background-color: var(--theme-bg-light);
+    border-color: var(--theme-color);
+    color: var(--theme-color);
+}
+
+/* ホーム画面のスタイル */
+.upcoming-live {
+    border-left: 3px solid var(--theme-color);
+    background-color: var(--theme-bg-light);
+}
+
+.live-date {
+    color: var(--theme-color);
+}
+
+.artist-card {
+    border: 1px solid rgba(var(--theme-color-rgb), 0.1);
+    transition: all 0.2s;
+}
+
+.artist-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(var(--theme-color-rgb), 0.1);
+    border-color: var(--theme-color);
+}
+
+.live-badge {
+    background-color: var(--theme-color);
+}
+
+.search-box:focus {
+    border-color: var(--theme-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--theme-color-rgb), 0.25);
+}
+
+/* テーマカラーのテキスト */
+.theme-color {
+    color: var(--theme-color);
+}
+
+/* カードタイトル */
+.card-title.theme-color {
+    color: var(--theme-color);
+    font-weight: 600;
+}
+
+/* セクションタイトルの強調 */
+.section-title.theme-color {
+    color: var(--theme-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--theme-color);
+}
+
+/* ライブ一覧画面のスタイル */
+.calendar-header {
+    background-color: var(--theme-bg-light);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.calendar-nav .btn {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+
+.calendar-nav .btn:hover {
+    background-color: var(--theme-color);
+    color: white;
+}
+
+.live-list-item {
+    border-left: 3px solid var(--theme-color);
+    transition: all 0.2s;
+}
+
+.live-list-item:hover {
+    background-color: var(--theme-bg-light);
+    transform: translateX(5px);
+}
+
+.live-date-badge {
+    color: var(--theme-color);
+    border: 1px solid var(--theme-color);
+    background-color: var(--theme-bg-light);
+}
+
+.filter-button.active {
+    background-color: var(--theme-color);
+    border-color: var(--theme-color);
+    color: white;
+}
+
+.filter-button:not(.active):hover {
+    border-color: var(--theme-color);
+    color: var(--theme-color);
+}
+
+/* カテゴリーカードのスタイル */
+.category-card.setlist {
+    border-left: 3px solid #0d6efd;
+}
+.category-card.setlist:hover {
+    background-color: #f8f9ff;
+}
+
+.category-card.items {
+    border-left: 3px solid #198754;
+}
+.category-card.items:hover {
+    background-color: #f8fff9;
+}
+
+.category-card.fashion {
+    border-left: 3px solid #dc3545;
+}
+.category-card.fashion:hover {
+    background-color: #fff8f8;
+}
+
+.theme-bg {
+    background-color: var(--theme-color);
+    color: white;
+}
+
+.theme-bg-light {
+    background-color: var(--theme-bg-light);
+}
+
+.btn-theme {
+    background-color: var(--theme-color);
+    color: white;
+}
+
+.btn-theme:hover {
+    background-color: var(--theme-color-dark);
+    color: white;
+}
+
+.btn-outline-theme {
+    color: var(--theme-color);
+    border: 1px solid var(--theme-color);
+}
+
+.btn-outline-theme:hover {
+    background-color: var(--theme-color);
+    color: white;
+} 
