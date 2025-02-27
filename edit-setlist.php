@@ -228,7 +228,7 @@ $success = $editor->getSuccess();
                                       rows="4"><?= h($setlist['description']) ?></textarea>
                         </div>
 
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="songs" class="form-label">曲目（1行に1曲）</label>
                             <textarea class="form-control" id="songs" name="songs" rows="10"><?php
                                 if (!empty($setlist['songs'])) {
@@ -237,7 +237,7 @@ $success = $editor->getSuccess();
                                     }
                                 }
                             ?></textarea>
-                        </div>
+                        </div> -->
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">

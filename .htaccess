@@ -1,0 +1,38 @@
+Options -Indexes
+RewriteEngine On
+
+# ベースパスを設定（実際のパスに合わせて修正）
+RewriteBase /
+
+# PHPファイルへの直接アクセスを許可
+<FilesMatch "\.php$">
+    Require all granted
+</FilesMatch>
+
+# セキュリティヘッダー
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+# PHPのエラー表示（開発時のみ）
+php_flag display_errors on
+php_value error_reporting E_ALL
+
+# エラーページの設定
+ErrorDocument 404 /404.php
+
+# リクエストの書き換え
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ $1 [L,QSA]
+
+# /livelog/ から /Live-Sharing/ へのリダイレクト
+RewriteCond %{REQUEST_URI} ^/livelog/
+RewriteRule ^livelog/(.*)$ /Live-Sharing/$1 [L,R=301]
+
+# 特定のPHPファイルへのアクセスを許可
+<Files "create-item-list.php">
+    Require all granted
+</Files> 

@@ -282,20 +282,16 @@ include 'header.php';
                 <div class="predictions-list" id="predictionsDisplay">
                     <?php if (!empty($thread['predictions'])): ?>
                         <?php foreach ($thread['predictions'] as $prediction): ?>
-                            <div class="prediction-card card mb-3">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-0"><?= h($prediction['title']) ?></h6>
-                                        <small class="text-muted">
-                                            投稿者: <?= h($prediction['username']) ?> - 
-                                            <?= time_ago($prediction['created_at']) ?>
-                                        </small>
+                            <div class="card mb-4 prediction-card hover-effect">
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <a href="setlist-detail.php?id=<?= $prediction['id'] ?>" class="text-decoration-none">
+                                                <h5 class="mb-0"><?= h($prediction['title']) ?></h5>
+                                            </a>
+                                            <small class="text-muted ms-2">by <?= h($prediction['username']) ?></small>
                                     </div>
-                                    <div>
-                                        <button class="btn btn-sm btn-outline-primary like-button" data-prediction-id="<?= $prediction['id'] ?>">
-                                            <i class="bi bi-heart me-1"></i>
-                                            <span class="like-count"><?= (int)$prediction['likes_count'] ?></span>
-                                        </button>
+                                        <small class="text-muted"><?= time_elapsed_string($prediction['created_at']) ?></small>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -343,6 +339,20 @@ include 'header.php';
                                             </button>
                                         </div>
                                     </div>
+
+                                    <!-- アクションボタン -->
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary like-button" 
+                                                    data-prediction-id="<?= $prediction['id'] ?>">
+                                                <i class="bi bi-heart me-1"></i>
+                                                <span class="like-count"><?= (int)$prediction['likes_count'] ?></span>
+                                            </button>
+                                        </div>
+                                        <a href="setlist-detail.php?id=<?= $prediction['id'] ?>" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-arrow-right"></i> 詳細を見る
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -353,37 +363,82 @@ include 'header.php';
             </div>
 
             <!-- 投稿一覧
-            <h4 class="mb-3">投稿（<?= count($thread['posts']) ?>件）</h4>
-            <div class="comments" id="commentsSection">
-                <?php foreach ($thread['posts'] as $index => $post): ?>
-                    <div class="comment">
-                        <div class="d-flex">
-                            <span class="comment-number">#<?= $index + 1 ?></span>
-                            <div class="flex-grow-1">
-                                <div class="comment-meta mb-2">
-                                    <?php if ($post['profile_image']): ?>
-                                        <img src="<?= h($post['profile_image']) ?>" class="rounded-circle me-2" width="24" height="24">
-                                    <?php endif; ?>
-                                    <?= h($post['username']) ?>
-                                    <span class="ms-2"><?= time_ago($post['created_at']) ?></span>
+            <?php foreach ($thread['posts'] as $post): ?>
+                <?php
+                // 投稿タイプに基づいてリンク先を決定
+                $detailUrl = 'thread-detail.php'; // デフォルト
+                $postType = $post['post_type'] ?? $thread['board_type'] ?? 'general';
+                
+                switch ($postType) {
+                    case 'setlist':
+                        $detailUrl = 'setlist-detail.php';
+                        break;
+                    case 'fashion':
+                        $detailUrl = 'fashion-detail.php';
+                        break;
+                    case 'item_list':
+                        $detailUrl = 'item-list-detail.php';
+                        break;
+                }
+                ?>
+                <a href="<?= $detailUrl ?>?id=<?= $post['id'] ?>" class="text-decoration-none">
+                    <div class="card mb-4 post-card hover-effect">
+                        <div class="card-body">
+                            <!-- ユーザー情報 -->
+                            <!-- <div class="d-flex align-items-center mb-3">
+                                <img src="<?= !empty($post['profile_image']) ? 'uploads/profiles/' . h($post['profile_image']) : 'img/default-profile.png' ?>" 
+                                     class="rounded-circle me-2" width="40" height="40" alt="ユーザー画像">
+                                <div>
+                                    <h6 class="mb-0"><?= h($post['username']) ?></h6>
+                                    <small class="text-muted"><?= time_elapsed_string($post['created_at']) ?></small>
                                 </div>
-                                <p><?= nl2br(h($post['content'])) ?></p>
-                                <div class="d-flex align-items-center">
-                                    <button class="btn btn-sm btn-outline-primary me-2 like-button <?= $post['is_liked'] ? 'active' : '' ?>" 
-                                            data-post-id="<?= $post['id'] ?>">
-                                        <i class="bi bi-heart<?= $post['is_liked'] ? '-fill' : '' ?> me-1"></i>
-                                        <span class="like-count"><?= (int)$post['likes_count'] ?></span>
+                            </div> -->
+
+                            <!-- 投稿内容 -->
+                            <!-- <div class="post-content">
+                                <?php if (!empty($post['image_url'])): ?>
+                                    <div class="post-image mb-3">
+                                        <img src="uploads/<?= $postType ?>/<?= h($post['image_url']) ?>" 
+                                             class="img-fluid rounded" alt="投稿画像">
+                                    </div>
+                                <?php endif; ?>
+                                <p class="card-text"><?= nl2br(h($post['content'])) ?></p>
+                            </div> -->
+
+                            <!-- アクションボタン -->
+                            <!-- <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-primary like-button <?= $post['is_liked'] ? 'liked' : '' ?>"
+                                            data-id="<?= $post['id'] ?>" data-type="post" 
+                                            onclick="event.stopPropagation();">
+                                        <i class="bi <?= $post['is_liked'] ? 'bi-heart-fill' : 'bi-heart' ?>"></i>
+                                        <span class="like-count"><?= $post['likes_count'] ?></span>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary reply-button" 
-                                            data-post-id="<?= $post['id'] ?>">
-                                        <i class="bi bi-reply me-1"></i>返信
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                            onclick="event.stopPropagation();">
+                                        <i class="bi bi-chat"></i> 
+                                        コメント
                                     </button>
                                 </div>
+                                <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $post['user_id']): ?>
+                                    <div class="dropdown" onclick="event.stopPropagation();">
+                                        <button class="btn btn-sm btn-link text-muted" type="button" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="edit-<?= $postType ?>.php?id=<?= $post['id'] ?>">
+                                                <i class="bi bi-pencil me-2"></i>編集</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#" 
+                                                  onclick="deletePost(<?= $post['id'] ?>, '<?= $postType ?>')">
+                                                <i class="bi bi-trash me-2"></i>削除</a></li>
+                                        </ul>
                             </div>
-                        </div>
+                                <?php endif; ?>
+                            </div> -->
+                        <!-- </div>
                     </div>
+                </a> -->
                 <?php endforeach; ?>
-            </div> -->
         </div>
 
         <!-- 右サイドバー -->
@@ -393,14 +448,69 @@ include 'header.php';
                 <div class="card-body">
                     <h5 class="card-title mb-3">関連スレッド</h5>
                     <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <h6 class="mb-1">過去のROCK FESTIVALセトリまとめ</h6>
-                            <small class="text-muted">32件の投稿</small>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <h6 class="mb-1">新曲情報共有</h6>
-                            <small class="text-muted">45件の投稿</small>
-                        </a>
+                        <?php
+                        // 関連スレッドを取得
+                        try {
+                            $stmt = $pdo->prepare("
+                                SELECT t.*, 
+                                       b.name as board_name,
+                                       b.type as board_type,
+                                       COUNT(p.id) as posts_count 
+                                FROM threads t
+                                LEFT JOIN boards b ON t.board_id = b.id
+                                LEFT JOIN posts p ON t.id = p.thread_id
+                                WHERE t.live_id = :live_id 
+                                AND t.id != :current_thread_id
+                                GROUP BY t.id
+                                ORDER BY t.created_at DESC
+                                LIMIT 5
+                            ");
+                            $stmt->execute([
+                                ':live_id' => $thread['live_id'],
+                                ':current_thread_id' => $thread_id
+                            ]);
+                            $relatedThreads = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                            if (!empty($relatedThreads)): 
+                                foreach ($relatedThreads as $relatedThread):
+                                    // スレッドタイプに基づいてリンク先を決定
+                                    $detailUrl = 'thread-detail.php'; // デフォルト
+                                    switch ($relatedThread['board_type']) {
+                                        case 'setlist':
+                                            $detailUrl = 'setlist-detail.php';
+                                            break;
+                                        case 'fashion':
+                                            $detailUrl = 'fashion-detail.php';
+                                            break;
+                                        case 'review':
+                                            $detailUrl = 'review-detail.php';
+                                            break;
+                                        case 'ticket':
+                                            $detailUrl = 'ticket-detail.php';
+                                            break;
+                                    }
+                                    ?>
+                                    <a href="<?= $detailUrl ?>?id=<?= $relatedThread['id'] ?>" 
+                                       class="list-group-item list-group-item-action">
+                                        <h6 class="mb-1"><?= h($relatedThread['title']) ?></h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="bi bi-chat-fill me-1"></i><?= $relatedThread['posts_count'] ?>件の投稿
+                                            </small>
+                                            <?php if ($relatedThread['board_name']): ?>
+                                                <span class="badge bg-secondary"><?= h($relatedThread['board_name']) ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </a>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p class="text-muted mb-0">関連するスレッドはありません。</p>
+                            <?php endif;
+                        } catch (PDOException $e) {
+                            error_log('Related Threads Error: ' . $e->getMessage());
+                            echo '<p class="text-muted mb-0">関連スレッドの取得に失敗しました。</p>';
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -470,73 +580,41 @@ include 'header.php';
     </div>
 </div>
 
-
-
-
-<!-- スマホ対応用のスタイルを追加 -->
+<!-- カード用のホバーエフェクトのCSS -->
 <style>
-    @media (max-width: 768px) {
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 80%;
-            z-index: 1000;
-            transition: 0.3s;
-            height: 100vh;
-        }
-        
-        .sidebar.show {
-            left: 0;
-        }
-        
-        .mobile-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #dee2e6;
-            z-index: 999;
-            padding: 0.5rem;
-        }
-        
-        .mobile-nav .nav-link {
-            padding: 0.5rem;
-            text-align: center;
-            margin: 0;
-            font-size: 0.8rem;
-        }
-        
-        .mobile-nav .nav-link i {
-            font-size: 1.2rem;
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-        
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-        }
-        
-        .overlay.show {
-            display: block;
-        }
-        
-        /* メインコンテンツの調整 */
-        .main-content {
-            margin-bottom: 70px;
-        }
+.post-card.hover-effect {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card.hover-effect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+/* クリック時のエフェクトを防ぐ */
+.btn-group button:active,
+.dropdown button:active {
+    transform: none !important;
+}
+
+.prediction-card.hover-effect {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prediction-card.hover-effect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+/* ボタンのクリックエフェクトを防ぐ */
+.btn-group button:active {
+    transform: none !important;
     }
 </style>
 
-<!-- ナビゲーション制御用JS -->
+<!-- JavaScriptの追加 -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const menuBtn = document.getElementById('menuBtn');
@@ -690,6 +768,43 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error:', error));
         });
     });
+
+    // いいねボタンのクリックイベントが親要素に伝播するのを防ぐ
+    document.querySelectorAll('.like-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // いいね処理を実行
+        });
+    });
+
+    // 投稿削除用の関数
+    function deletePost(postId, postType) {
+        if (confirm('本当にこの投稿を削除しますか？')) {
+            fetch('ajax/delete-post.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    post_id: postId,
+                    post_type: postType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('削除に失敗しました: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('エラーが発生しました。');
+            });
+        }
+    }
 });
 </script>
 

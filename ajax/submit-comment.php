@@ -1,8 +1,6 @@
 <?php
-require_once __DIR__ . '/../includes/config.php';
-
-// JSONレスポンスのヘッダー設定
-header('Content-Type: application/json');
+require_once '../includes/config.php';
+require_once '../includes/functions.php';
 
 // ログインチェック
 if (!isset($_SESSION['user_id'])) {
@@ -12,43 +10,39 @@ if (!isset($_SESSION['user_id'])) {
 
 // POSTデータの取得
 $data = json_decode(file_get_contents('php://input'), true);
-$comment = $data['comment'] ?? '';
-$predictionId = $data['predictionId'] ?? 0;
+$fashion_id = (int)($data['fashion_id'] ?? 0);
+$comment = trim($data['comment'] ?? '');
 
-if (empty($comment) || $predictionId <= 0) {
-    echo json_encode(['success' => false, 'message' => '無効なデータです']);
+if (!$fashion_id || !$comment) {
+    echo json_encode(['success' => false, 'message' => '無効なリクエストです']);
     exit;
 }
 
 try {
     // コメントを保存
-    $stmt = $pdo->prepare("
-        INSERT INTO setlist_prediction_comments 
-        (setlist_prediction_id, user_id, comment, created_at)
+    $stmt = $pdo->prepare('
+        INSERT INTO fashion_comments (fashion_post_id, user_id, comment, created_at)
         VALUES (?, ?, ?, NOW())
-    ");
-    $stmt->execute([$predictionId, $_SESSION['user_id'], $comment]);
+    ');
+    $stmt->execute([$fashion_id, $_SESSION['user_id'], $comment]);
 
-    // 投稿したユーザー情報を取得
-    $stmt = $pdo->prepare("
-        SELECT c.*, u.username 
-        FROM setlist_prediction_comments c
-        JOIN users u ON c.user_id = u.id
-        WHERE c.id = LAST_INSERT_ID()
-    ");
-    $stmt->execute();
-    $newComment = $stmt->fetch(PDO::FETCH_ASSOC);
+    // ユーザー情報を取得
+    $stmt = $pdo->prepare('
+        SELECT username, profile_image 
+        FROM users 
+        WHERE id = ?
+    ');
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     echo json_encode([
         'success' => true,
-        'comment' => [
-            'id' => $newComment['id'],
-            'username' => $newComment['username'],
-            'comment' => $newComment['comment'],
-            'created_at' => $newComment['created_at']
-        ]
+        'username' => $user['username'],
+        'profile_image' => $user['profile_image'],
+        'comment' => htmlspecialchars($comment)
     ]);
 
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'エラーが発生しました: ' . $e->getMessage()]);
+} catch (PDOException $e) {
+    error_log('Database Error: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'データベースエラー']);
 } 

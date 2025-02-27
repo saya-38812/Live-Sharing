@@ -146,6 +146,11 @@ if ($error = $pageManager->getError()) {
 // データの取得
 extract($pageManager->getData());
 
+// ページの先頭でCSRFトークンを生成
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -400,42 +405,40 @@ extract($pageManager->getData());
             <!-- 持ち物リスト一覧 -->
             <?php if (!empty($itemLists)): ?>
                 <?php foreach ($itemLists as $list): ?>
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h5 class="card-title mb-1">
-                                        <a href="item-list-detail.php?id=<?= (int)$list['id'] ?>" class="text-decoration-none">
+                    <!-- カード全体をリンクとして機能させる -->
+                    <div class="card mb-3 position-relative">
+                        <a href="item-list-detail.php?id=<?= (int)$list['id'] ?>" 
+                           class="text-decoration-none text-dark stretched-link">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="card-title mb-1">
                                             <?= htmlspecialchars($list['title']) ?>
-                                        </a>
-                                    </h5>
-                                    <p class="text-muted mb-0">
-                                        <small>
-                                            <a href="live-detail.php?id=<?= (int)$list['live_id'] ?>" class="text-decoration-none">
+                                        </h5>
+                                        <p class="text-muted mb-0">
+                                            <span class="text-decoration-none">
                                                 <?= htmlspecialchars($list['live_title']) ?>
-                                            </a>
+                                            </span>
                                             (<?= date('Y/m/d', strtotime($list['live_date'])) ?>)
-                                        </small>
-                                    </p>
+                                        </p>
+                                    </div>
+                                    <!-- いいねボタンはリンクの影響を受けないようにする -->
+                                    <div class="position-relative" style="z-index: 2;">
+                                        <button class="btn btn-link text-decoration-none like-button <?= $list['is_liked'] ? 'liked' : '' ?>"
+                                                data-id="<?= (int)$list['id'] ?>" data-type="item_list"
+                                                onclick="event.preventDefault();">
+                                            <i class="bi bi-heart<?= $list['is_liked'] ? '-fill' : '' ?>"></i>
+                                            <span class="like-count"><?= (int)$list['like_count'] ?></span>
+                                        </button>
+                                    </div>
                                 </div>
-                                <button class="btn btn-link text-decoration-none like-button <?= $list['is_liked'] ? 'liked' : '' ?>"
-                                        data-id="<?= (int)$list['id'] ?>" data-type="item_list">
-                                    <i class="bi bi-heart<?= $list['is_liked'] ? '-fill' : '' ?>"></i>
-                                    <span class="like-count"><?= (int)$list['like_count'] ?></span>
-                                </button>
+                                <div class="d-flex align-items-center mb-2">
+                                    <img src="<?= empty($list['profile_image']) ? 'img/default-profile.jpg' : 'uploads/profiles/' . h($list['profile_image']) ?>" 
+                                         class="rounded-circle me-2" width="24" height="24" alt="Profile">
+                                    <span class="text-muted small"><?= h($list['username']) ?></span>
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center">
-                                <img src="<?= htmlspecialchars($list['profile_image'] ?? 'img/default-profile.jpg') ?>" 
-                                     class="rounded-circle me-2" width="24" height="24" alt="Profile">
-                                <span class="text-muted">
-                                    <?= htmlspecialchars($list['username']) ?>
-                                </span>
-                                <span class="mx-2">•</span>
-                                <span class="text-muted">
-                                    <i class="bi bi-list-check me-1"></i><?= (int)$list['item_count'] ?>アイテム
-                                </span>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -499,7 +502,21 @@ extract($pageManager->getData());
                 <h5 class="modal-title">持ち物リストを作成</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="create-item-list.php" method="POST">
+            <?php
+            // 現在のURLからベースパスを取得
+            $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $basePath = '/livelog'; // 固定のベースパスを使用
+            ?>
+            <!-- デバッグ情報を表示 -->
+            <div class="alert alert-info">
+                Current Path: <?= __DIR__ ?><br>
+                Script Path: <?= $_SERVER['SCRIPT_NAME'] ?><br>
+                Request URI: <?= $_SERVER['REQUEST_URI'] ?><br>
+                Base Path: <?= $basePath ?><br>
+                Current URL: <?= $_SERVER['HTTP_HOST'] . $currentPath ?>
+            </div>
+            <form action="<?= $basePath ?>/create-item-list.php" method="POST" id="createItemListForm">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">ライブを選択</label>
@@ -570,6 +587,22 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+});
+</script>
+
+<!-- デバッグ用のJavaScript追加 -->
+<script>
+document.getElementById('createItemListForm').addEventListener('submit', function(e) {
+    // フォームの送信をいったん止める
+    e.preventDefault();
+    
+    // フォームデータをコンソールに出力
+    console.log('Form action:', this.action);
+    console.log('Form method:', this.method);
+    console.log('CSRF token:', this.querySelector('[name="csrf_token"]').value);
+    
+    // フォームを送信
+    this.submit();
 });
 </script>
 </body>

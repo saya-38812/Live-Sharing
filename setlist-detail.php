@@ -35,14 +35,8 @@ try {
         exit;
     }
     
-    // セットリストの曲目を取得
-    $stmt = $pdo->prepare('
-        SELECT * FROM setlist_prediction_songs 
-        WHERE setlist_prediction_id = ? 
-        ORDER BY position
-    ');
-    $stmt->execute([$setlist_id]);
-    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // 曲目をJSONから配列に変換
+    $songs = json_decode($setlist['songs'], true) ?? [];
     
 } catch (PDOException $e) {
     error_log('Database Error: ' . $e->getMessage());
@@ -100,21 +94,16 @@ try {
                         <i class="bi bi-music-note-list me-2"></i>曲目一覧
                     </h5>
                     
-                    <?php if (empty($items)): ?>
+                    <?php if (empty($songs)): ?>
                         <p class="text-muted">まだ曲が登録されていません。</p>
                     <?php else: ?>
                         <div class="list-group list-group-flush">
-                            <?php foreach ($items as $index => $item): ?>
+                            <?php foreach ($songs as $index => $song): ?>
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
                                         <span class="me-3 text-muted"><?php echo $index + 1; ?>.</span>
-                                        <?php echo htmlspecialchars($item['title']); ?>
+                                        <?php echo htmlspecialchars($song); ?>
                                     </div>
-                                    <?php if ($item['duration']): ?>
-                                        <span class="badge bg-light text-dark">
-                                            <?php echo htmlspecialchars($item['duration']); ?>
-                                        </span>
-                                    <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>
                         </div>

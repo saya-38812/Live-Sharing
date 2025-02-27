@@ -5,27 +5,20 @@
  * @return string 経過時間の文字列
  */
 function time_ago($datetime) {
-    try {
-        $now = new DateTime();
-        $ago = new DateTime($datetime);
-        $diff = $now->diff($ago);
+    $time = strtotime($datetime);
+    $now = time();
+    $diff = $now - $time;
 
-        if ($diff->y > 0) {
-            return $diff->y . '年前';
-        } elseif ($diff->m > 0) {
-            return $diff->m . 'ヶ月前';
-        } elseif ($diff->d > 0) {
-            return $diff->d . '日前';
-        } elseif ($diff->h > 0) {
-            return $diff->h . '時間前';
-        } elseif ($diff->i > 0) {
-            return $diff->i . '分前';
-        } else {
-            return 'たった今';
-        }
-    } catch (Exception $e) {
-        error_log('time_ago error: ' . $e->getMessage());
-        return '日時不明';
+    if ($diff < 60) {
+        return 'たった今';
+    } elseif ($diff < 3600) {
+        return floor($diff / 60) . '分前';
+    } elseif ($diff < 86400) {
+        return floor($diff / 3600) . '時間前';
+    } elseif ($diff < 604800) {
+        return floor($diff / 86400) . '日前';
+    } else {
+        return date('Y年n月j日', $time);
     }
 }
 
@@ -62,13 +55,7 @@ function h($str) {
  * @return string フォーマットされた日付
  */
 function format_date($date) {
-    try {
-        $datetime = new DateTime($date);
-        return $datetime->format('Y年n月j日');
-    } catch (Exception $e) {
-        error_log('format_date error: ' . $e->getMessage());
-        return '日付不明';
-    }
+    return date('Y年n月j日', strtotime($date));
 }
 
 function set_error_message($message) {

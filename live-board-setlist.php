@@ -369,6 +369,25 @@ extract($pageManager->getData());
             transform: translateX(5px);
             background-color: var(--theme-bg-light);
         }
+
+        /* カードホバー時の効果 */
+        .post-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* カード内のリンクスタイル */
+        .post-card .card-body {
+            cursor: pointer;
+        }
+
+        .post-card .card-body:hover {
+            background-color: rgba(0,0,0,0.01);
+        }
     </style>
 </head>
 <body>
@@ -422,7 +441,9 @@ extract($pageManager->getData());
             <?php if (!empty($predictions)): ?>
                 <?php foreach ($predictions as $prediction): ?>
                     <div class="post-card card mb-3">
-                        <div class="card-body">
+                        <!-- カード全体をリンクに変更 -->
+                        <a href="setlist-detail.php?id=<?= (int)$prediction['id'] ?>" 
+                           class="card-body text-decoration-none text-dark">
                             <div class="d-flex align-items-center mb-3">
                                 <img src="<?= htmlspecialchars($prediction['profile_image'] ?? 'img/default-avatar.png') ?>" 
                                      class="rounded-circle me-2" width="40" height="40" 
@@ -457,7 +478,10 @@ extract($pageManager->getData());
                                     </div>
                                 </div>
                             <?php endif; ?>
+                        </a>
 
+                        <!-- いいねとコメントボタンは別のdivに -->
+                        <div class="card-footer bg-light">
                             <div class="d-flex align-items-center">
                                 <button class="btn btn-sm btn-outline-primary like-button <?= in_array($prediction['id'], $likedPredictions) ? 'liked' : '' ?>" 
                                         data-prediction-id="<?= (int)$prediction['id'] ?>">
@@ -467,44 +491,6 @@ extract($pageManager->getData());
                                 <a href="setlist-detail.php?id=<?= (int)$prediction['id'] ?>" class="btn btn-sm btn-outline-secondary ms-2">
                                     <i class="bi bi-chat me-1"></i><?= (int)$prediction['comments_count'] ?>
                                 </a>
-                            </div>
-                        </div>
-
-                        <!-- コメントセクション -->
-                        <div class="card-footer bg-light">
-                            <h6 class="mb-3">コメント (<?= count($prediction['comments']) ?>)</h6>
-                            <div class="comments" id="commentsSection-<?= $prediction['id'] ?>">
-                                <?php foreach ($prediction['comments'] as $comment): ?>
-                                    <div class="comment mb-2">
-                                        <div class="d-flex">
-                                            <img src="<?= h($comment['profile_image'] ?? 'img/default-avatar.png') ?>" 
-                                                 class="rounded-circle me-2" width="32" height="32">
-                                            <div class="flex-grow-1">
-                                                <div class="comment-meta small text-muted">
-                                                    <span class="fw-bold"><?= h($comment['username']) ?></span>
-                                                    <span class="ms-2"><?= time_ago($comment['created_at']) ?></span>
-                                                    <?php if ($comment['comment_type'] === 'thread'): ?>
-                                                        <span class="badge bg-info ms-2">スレッド</span>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <div class="comment-content">
-                                                    <?= nl2br(h($comment['comment'])) ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                            
-                            <!-- コメント投稿フォーム -->
-                            <div class="comment-form mt-3">
-                                <textarea class="form-control" rows="2" 
-                                          placeholder="コメントを入力..." 
-                                          id="commentInput-<?= $prediction['id'] ?>"></textarea>
-                                <button class="btn btn-primary btn-sm mt-2" 
-                                        id="submitCommentButton-<?= $prediction['id'] ?>">
-                                    コメントする
-                                </button>
                             </div>
                         </div>
                     </div>
